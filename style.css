@@ -304,3 +304,11 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   .cc-foot .btn { flex: 1; padding: 13px 10px; }
   .hint { display: none; }
 }
+
+/* INIZIA L'AVVENTURA */
+#s-begin { background: radial-gradient(ellipse at center, rgba(255,255,255,.04), rgba(0,0,0,.6) 70%); }
+.begin-banner { color: #f4f1ea; width: 100%; text-align: center; font-size: clamp(30px, 6.5vw, 80px);
+  text-shadow: 0 0 26px rgba(255,255,255,.3); }
+.begin-banner::before { background: linear-gradient(180deg, transparent, rgba(0,0,0,.55) 25%, rgba(0,0,0,.55) 75%, transparent); }
+#s-begin.active .begin-banner { animation: banner 3s ease both; }
+#s-end.active .death { animation-delay: .35s; }

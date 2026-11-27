@@ -255,12 +255,18 @@
   const modal = $("#confirm");
   function askConfirm() { SFX.confirm(); modal.classList.add("show"); if (lang === "calle") playVm(modal.querySelector("p .vm")); }
   function closeConfirm() { modal.classList.remove("show"); }
+  // due tempi: prima l'illusione, poi la verità
   function confirmYes() {
     closeConfirm();
-    show("s-end");
-    SFX.boom();
-    if (lang === "calle") setTimeout(() => playVm($("#s-end .big-banner .vm")), 600);
-    after(6000, toMenu);
+    show("s-begin");
+    SFX.begin();
+    if (lang === "calle") setTimeout(() => playVm($("#s-begin .big-banner .vm")), 400);
+    after(3400, () => {
+      show("s-end");
+      SFX.death();
+      if (lang === "calle") setTimeout(() => playVm($("#s-end .big-banner .vm")), 1200);
+      after(7000, toMenu);
+    });
   }
   function toMenu() { clearTimeout(seqTimer); show("s-title"); menuSel("#title-menu", 0); }
   $("#cc-ok").addEventListener("click", askConfirm);
@@ -294,7 +300,7 @@
       else if (k === "Enter") askConfirm();
       else if (k === "Escape") $("#cc-back").click();
     } else if (screen === "s-credits" && (k === "Escape" || k === "Enter")) $("#cr-back").click();
-    else if (screen === "s-end" && performance.now() - screenAt > 2500) toMenu();
+    else if (screen === "s-end" && performance.now() - screenAt > 3000) toMenu();
   });
 
   // ---------- braci ----------

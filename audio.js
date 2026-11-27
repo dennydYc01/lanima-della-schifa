@@ -146,6 +146,55 @@ window.SFX = (() => {
     });
   }
 
+  // "Inizia l'avventura": accordo luminoso che sale piano
+  function begin() {
+    if (!ctx) return;
+    const t = now();
+    [261.6, 329.6, 392, 523.3].forEach((f, i) => {
+      const o = ctx.createOscillator(); o.type = "triangle"; o.frequency.value = f;
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.06, t + 0.6 + i * 0.12);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 3.2);
+      o.connect(g); out(g, 0.8); o.start(t); o.stop(t + 3.3);
+    });
+  }
+
+  // "SEI MORTO": silenzio, poi un colpo grave con un grappolo di ottoni dissonanti
+  // e un gong che si spegne lentamente nel riverbero
+  function death() {
+    if (!ctx) return;
+    duck(0, 0.25);
+    const t = now() + 0.35;
+    // colpo di sub
+    const sub = ctx.createOscillator(); sub.type = "sine";
+    sub.frequency.setValueAtTime(70, t); sub.frequency.exponentialRampToValueAtTime(28, t + 2.5);
+    const sg = ctx.createGain(); env(sg, t, 0.008, 0.55, 3.2);
+    sub.connect(sg); out(sg, 0.5); sub.start(t); sub.stop(t + 3.5);
+    // ottoni gravi: re, mi bemolle, la (dissonanza da cattedrale)
+    [73.4, 77.8, 110, 146.8, 155.6].forEach((f, i) => {
+      const o = ctx.createOscillator(); o.type = "sawtooth"; o.frequency.value = f;
+      const lp = ctx.createBiquadFilter(); lp.type = "lowpass";
+      lp.frequency.setValueAtTime(1400, t); lp.frequency.exponentialRampToValueAtTime(180, t + 4);
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.05 / (1 + i * 0.3), t + 0.04);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 5);
+      o.connect(lp).connect(g); out(g, 0.9); o.start(t); o.stop(t + 5.2);
+    });
+    // gong: parziali non armoniche, coda lunga
+    [98, 98 * 2.08, 98 * 2.91, 98 * 4.13, 98 * 5.6].forEach((f, i) => {
+      const o = ctx.createOscillator(); o.frequency.value = f;
+      const g = ctx.createGain(); env(g, t + 0.01, 0.006, 0.07 / (i + 1), 6 - i * 0.6);
+      o.connect(g); out(g, 1); o.start(t); o.stop(t + 6.5);
+    });
+    // soffio di polvere
+    const n = noise(3); const bp = ctx.createBiquadFilter(); bp.type = "lowpass"; bp.frequency.value = 600;
+    const ng = ctx.createGain(); env(ng, t, 0.02, 0.12, 2.5);
+    n.connect(bp).connect(ng); out(ng, 1); n.start(t);
+    // la musica torna piano dopo
+    setTimeout(() => duck(0.22, 4), 6500);
+  }
+
   // Onda + galoppo per BigHorses
   function horses() {
     if (!ctx) return;
@@ -282,5 +331,5 @@ window.SFX = (() => {
     };
   }
 
-  return { init, ambient, duck, tick, move, back, confirm, deny, boom, horses, notti, voice, get ready() { return !!ctx; } };
+  return { init, ambient, duck, tick, move, back, confirm, deny, boom, begin, death, horses, notti, voice, get ready() { return !!ctx; } };
 })();
