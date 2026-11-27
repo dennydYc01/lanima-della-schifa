@@ -220,7 +220,6 @@
     }).join("");
     $("#equip-list").innerHTML = (lang === "calle" ? D.it : T)[c.key + "_e"]
       .map(e => `<li>${lang === "calle" ? vm(e) : e}</li>`).join("");
-    putText($("#cc-desc"), lang === "calle" ? D.it[c.key + "_d"] : T[c.key + "_d"]);
   }
   function pick(i) {
     i = (i + CLASSES.length) % CLASSES.length;
