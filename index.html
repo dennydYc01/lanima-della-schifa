@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L'Anima della Schifa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Anton&family=Yellowtail&family=Monoton&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="embers"></canvas>
+<div id="fog"><div class="fog f1"></div><div class="fog f2"></div></div>
+
+<!-- 0. Gate (serve per sbloccare l'audio) -->
+<section class="screen active" id="s-gate">
+  <div class="gate-inner">
+    <div class="sigil"></div>
+    <p class="pulse" data-i18n="gate"></p>
+    <p class="small" data-i18n="gate_sub"></p>
+  </div>
+</section>
+
+<!-- 1. Avvertenza -->
+<section class="screen" id="s-warn">
+  <div class="warn">
+    <h2 data-i18n="warn_title"></h2>
+    <div class="rule"></div>
+    <p data-i18n="warn_body"></p>
+    <div class="rating"><span class="r18">18</span><span class="r99">99</span></div>
+  </div>
+</section>
+
+<!-- 2. BigHorses -->
+<section class="screen logo-screen" id="s-bighorses">
+  <div class="bh">
+    <svg class="bh-mark" viewBox="0 0 240 240" aria-label="BigHorses">
+      <defs>
+        <clipPath id="bhc"><circle cx="120" cy="120" r="108"/></clipPath>
+        <pattern id="bhlines" width="6" height="6" patternUnits="userSpaceOnUse">
+          <path d="M0 6 L6 0" stroke="#1d3557" stroke-width="1.2"/>
+        </pattern>
+      </defs>
+      <circle cx="120" cy="120" r="114" fill="#f1e6cf" stroke="#1d3557" stroke-width="6"/>
+      <g clip-path="url(#bhc)">
+        <!-- sole -->
+        <circle cx="62" cy="64" r="24" fill="#c8553d"/>
+        <!-- onda -->
+        <g class="bh-wave">
+          <path d="M-10 230 C10 170 30 110 90 78 C140 52 196 70 200 112 C203 140 176 150 162 136 C150 124 160 104 176 110
+                   C170 92 140 88 118 104 C92 124 84 170 96 230 Z" fill="#1d3557"/>
+          <path d="M-10 230 C10 170 30 110 90 78 C140 52 196 70 200 112 C203 140 176 150 162 136 C150 124 160 104 176 110
+                   C170 92 140 88 118 104 C92 124 84 170 96 230 Z" fill="url(#bhlines)" opacity=".5"/>
+          <path d="M150 66 l8 -10 l4 12 l8 -9 l3 13 l9 -6 l0 13 l10 -3 l-4 12" fill="none" stroke="#f1e6cf" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+          <path d="M40 140 C60 120 90 118 100 140 M30 175 C55 150 85 152 96 172" fill="none" stroke="#f1e6cf" stroke-width="3" opacity=".8"/>
+          <path d="M-10 240 L-10 200 C30 190 70 205 110 196 C150 188 190 200 250 192 L250 240 Z" fill="#1d3557"/>
+          <path d="M-10 205 C30 195 70 210 110 201 C150 193 190 205 250 197" fill="none" stroke="#f1e6cf" stroke-width="3"/>
+        </g>
+        <!-- cavallo -->
+        <g class="bh-horse">
+          <path d="M92 236 L100 178 C88 166 84 150 92 132 L104 104 L100 74 L112 90 L118 62 L126 92
+                   C150 96 176 118 190 146 C196 158 190 170 178 168 L160 162 C150 158 142 162 140 172
+                   L146 186 C150 200 150 220 152 236 Z" fill="#0b0f17"/>
+          <path d="M112 96 C104 112 98 130 100 150 M120 98 C114 116 110 134 112 156 M128 100 C124 118 122 138 124 160"
+                fill="none" stroke="#f1e6cf" stroke-width="2.2" opacity=".55"/>
+          <circle cx="150" cy="118" r="4" fill="#f1e6cf"/>
+          <circle cx="182" cy="156" r="2.5" fill="#f1e6cf"/>
+        </g>
+      </g>
+    </svg>
+    <div class="bh-name">BIG<span>HORSES</span></div>
+    <div class="bh-tag" data-i18n="hz_tag"></div>
+  </div>
+</section>
+
+<!-- 3. BigNotti -->
+<section class="screen logo-screen" id="s-bignotti">
+  <div class="bn">
+    <svg class="bn-mark" viewBox="0 0 200 240" aria-label="BigNotti">
+      <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <!-- cannuccia -->
+        <path class="neon-pink" d="M118 24 L104 60 L108 200" stroke-width="5"/>
+        <!-- lime -->
+        <g class="neon-lime">
+          <path d="M120 70 A34 34 0 0 1 186 70 Z" stroke-width="5"/>
+          <path d="M153 70 L132 52 M153 70 L153 40 M153 70 L174 52" stroke-width="3"/>
+        </g>
+        <!-- bicchiere -->
+        <path class="neon-cyan" d="M48 62 L60 222 L140 222 L152 62" stroke-width="6"/>
+        <path class="neon-cyan" d="M52 100 L148 100" stroke-width="3" opacity=".7"/>
+        <!-- ghiaccio -->
+        <rect class="neon-cyan" x="70" y="118" width="30" height="30" rx="4" transform="rotate(-12 85 133)" stroke-width="3"/>
+        <rect class="neon-cyan" x="98" y="150" width="28" height="28" rx="4" transform="rotate(14 112 164)" stroke-width="3"/>
+        <!-- bollicine -->
+        <g class="bubbles neon-cyan" stroke-width="2.5">
+          <circle cx="78" cy="200" r="4"/><circle cx="96" cy="190" r="3"/><circle cx="122" cy="205" r="3.5"/>
+          <circle cx="84" cy="170" r="2.5"/><circle cx="128" cy="130" r="3"/>
+        </g>
+      </g>
+    </svg>
+    <div class="bn-name">BigNotti</div>
+    <div class="bn-tag" data-i18n="bn_tag"></div>
+  </div>
+</section>
+
+<!-- 4. Titolo -->
+<section class="screen" id="s-title">
+  <div class="title-wrap">
+    <h1 class="game-title"><span class="t1">L'Anima</span><span class="t2">della Schifa</span></h1>
+    <nav class="menu" id="title-menu">
+      <button data-act="new" data-i18n="menu_new"></button>
+      <button data-act="lang" data-i18n="menu_lang"></button>
+      <button data-act="credits" data-i18n="menu_credits"></button>
+      <button data-act="quit" data-i18n="menu_quit"></button>
+    </nav>
+    <div class="toast" id="quit-toast" data-i18n="quit_msg"></div>
+  </div>
+  <div class="copyright">© BigHorses · BigNotti — MMXXVI</div>
+</section>
+
+<!-- 5. Lingua -->
+<section class="screen" id="s-lang">
+  <div class="panel lang-panel">
+    <h2 data-i18n="lang_title"></h2>
+    <div class="rule"></div>
+    <nav class="menu" id="lang-menu">
+      <button data-lang="it">Italiano</button>
+      <button data-lang="sc">Sardu</button>
+      <button data-lang="calle">Calle</button>
+    </nav>
+  </div>
+</section>
+
+<!-- 5b. Crediti -->
+<section class="screen" id="s-credits">
+  <div class="credits">
+    <h2 data-i18n="menu_credits"></h2>
+    <div class="rule"></div>
+    <div class="cr-logos">
+      <div class="cr-card cr-bh"><div class="cr-role" data-i18n="cr_dev"></div></div>
+      <div class="cr-card cr-bn"><div class="cr-role" data-i18n="cr_pub"></div></div>
+    </div>
+    <dl class="cr-list">
+      <dt data-i18n="cr_voice"></dt><dd data-i18n="cr_voice_who"></dd>
+      <dt data-i18n="cr_cast"></dt><dd data-i18n="cr_cast_who"></dd>
+      <dt data-i18n="cr_thanks"></dt><dd data-i18n="cr_thanks_who"></dd>
+    </dl>
+    <button class="btn" id="cr-back" data-i18n="cc_back"></button>
+  </div>
+</section>
+
+<!-- 6. Creazione personaggio -->
+<section class="screen" id="s-cc">
+  <header class="cc-head">
+    <h2 data-i18n="cc_title"></h2>
+    <div class="cc-lang">
+      <button data-lang="it">IT</button><button data-lang="sc">SC</button><button data-lang="calle">CALLE</button>
+    </div>
+  </header>
+  <div class="cc">
+    <aside class="cc-left panel">
+      <div class="lbl" data-i18n="cc_class"></div>
+      <ul id="class-list"></ul>
+      <div class="lbl" data-i18n="cc_name"></div>
+      <input id="cc-name" maxlength="16" autocomplete="off">
+    </aside>
+    <main class="cc-center">
+      <div class="altar">
+        <div class="halo"></div>
+        <img id="cc-portrait" alt="">
+        <div class="pedestal"></div>
+      </div>
+      <div class="cc-classname" id="cc-classname"></div>
+    </main>
+    <aside class="cc-right panel">
+      <div class="row lvl"><span data-i18n="cc_level"></span><b id="cc-lvl"></b></div>
+      <div class="lbl" data-i18n="cc_stats"></div>
+      <ul id="stat-list"></ul>
+      <div class="lbl" data-i18n="cc_equip"></div>
+      <ul id="equip-list"></ul>
+      <p id="cc-desc"></p>
+    </aside>
+  </div>
+  <footer class="cc-foot">
+    <button id="cc-back" class="btn" data-i18n="cc_back"></button>
+    <span class="hint" data-i18n="cc_hint"></span>
+    <button id="cc-ok" class="btn primary" data-i18n="cc_confirm"></button>
+  </footer>
+  <div class="modal" id="confirm">
+    <div class="panel">
+      <p data-i18n="sure"></p>
+      <div class="modal-btns">
+        <button class="btn" id="c-no" data-i18n="no"></button>
+        <button class="btn primary" id="c-yes" data-i18n="yes"></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. Inizio -->
+<section class="screen" id="s-begin">
+  <div class="begin">
+    <h1 class="big-banner" data-i18n="begin"></h1>
+    <div class="begin-name" id="begin-name"></div>
+  </div>
+</section>
+
+<!-- 8. Fine demo -->
+<section class="screen" id="s-end">
+  <div class="begin">
+    <h1 class="big-banner red" data-i18n="end"></h1>
+    <p data-i18n="end_sub"></p>
+    <button class="btn" id="again" data-i18n="again"></button>
+  </div>
+</section>
+
+<script src="i18n.js"></script>
+<script src="audio.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
