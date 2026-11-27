@@ -103,11 +103,37 @@
   function after(ms, fn) { clearTimeout(seqTimer); seqTimer = setTimeout(fn, ms); }
 
   const intro = {
-    "s-warn": () => { show("s-warn"); after(7000, intro["s-bighorses"]); },
+    "s-warn": () => {
+      show("s-warn");
+      const r = $("#s-warn .rating");
+      setTimeout(() => { r.classList.add("struck"); SFX.back(); }, 2600);
+      setTimeout(() => r.classList.add("gone"), 3000);
+      setTimeout(() => { r.classList.add("stamped"); SFX.confirm(); }, 3400);
+      after(7000, intro["s-bighorses"]);
+    },
     "s-bighorses": () => { show("s-bighorses"); SFX.duck(0.04, 0.6); setTimeout(() => SFX.horses(), 300); after(4600, intro["s-bignotti"]); },
-    "s-bignotti": () => { show("s-bignotti"); setTimeout(() => SFX.notti(), 200); after(4600, intro["s-title"]); },
-    "s-title": () => { clearTimeout(seqTimer); show("s-title"); SFX.duck(0.22, 4); setTimeout(() => SFX.boom(), 400); menuSel("#title-menu", 0); },
+    "s-bignotti": () => { show("s-bignotti"); neonShow(); after(4600, intro["s-title"]); },
+    "s-title": () => { clearTimeout(seqTimer); show("s-title"); SFX.duck(0.22, 4); menuSel("#title-menu", 0); },
   };
+  // Accensioni del neon BigNotti: [secondi, luminosità]. La stessa tabella guida luce e ronzio.
+  const NEON_MARK = [[0.3, 1], [0.36, 0], [0.48, 1], [0.6, 0], [0.95, 1], [1.02, 0.25], [1.1, 1]];
+  const NEON_NAME = [[1.45, 1], [1.5, 0], [1.62, 1], [1.72, 0.2], [1.8, 1], [2.25, 0], [2.4, 1]];
+  let neonTimers = [];
+  function neonShow() {
+    neonTimers.forEach(clearTimeout); neonTimers = [];
+    const mark = $("#s-bignotti .bn-mark"), name = $("#s-bignotti .bn-name"), tag = $("#s-bignotti .bn-tag");
+    [mark, name, tag].forEach(el => el.style.opacity = 0);
+    const at = (d, fn) => neonTimers.push(setTimeout(fn, d * 1000));
+    NEON_MARK.forEach(([d, v]) => at(d, () => mark.style.opacity = v));
+    NEON_NAME.forEach(([d, v]) => at(d, () => name.style.opacity = v));
+    at(2.8, () => tag.style.opacity = 1);
+    // per l'audio: luminosità complessiva (bicchiere 60%, scritta 40%) a ogni cambio
+    let m = 0, n = 0;
+    const ev = [...NEON_MARK.map(e => [...e, "m"]), ...NEON_NAME.map(e => [...e, "n"])]
+      .sort((a, b) => a[0] - b[0])
+      .map(([d, v, w]) => { if (w === "m") m = v; else n = v; return [d, m * 0.6 + n * 0.4]; });
+    SFX.notti(ev, 4.4);
+  }
   const introOrder = ["s-warn", "s-bighorses", "s-bignotti", "s-title"];
   function skipIntro() {
     if (performance.now() - screenAt < 900) return;
@@ -134,12 +160,12 @@
   $$(".menu").forEach(m => {
     const id = "#" + m.id;
     [...m.children].forEach((b, k) => b.addEventListener("mouseenter", () => {
-      if (sel[id] !== k) { SFX.tick(); sel[id] = k; [...m.children].forEach((x, j) => x.classList.toggle("sel", j === k)); }
+      if (sel[id] !== k) { SFX.move(); sel[id] = k; [...m.children].forEach((x, j) => x.classList.toggle("sel", j === k)); }
     }));
   });
 
   function titleAct(act) {
-    SFX.tick();
+    if (act === "quit") SFX.deny(); else SFX.confirm();
     if (act === "new") { show("s-cc"); renderCC(); }
     if (act === "lang") { langReturn = "s-title"; show("s-lang"); menuSel("#lang-menu", ["it", "sc", "calle"].indexOf(lang)); }
     if (act === "credits") { show("s-credits"); }
@@ -153,7 +179,7 @@
     const b = e.target.closest("button"); if (b) titleAct(b.dataset.act);
   });
   $$("[data-lang]").forEach(b => b.addEventListener("click", () => {
-    SFX.tick(); setLang(b.dataset.lang);
+    SFX.confirm(); setLang(b.dataset.lang);
     if (screen === "s-lang") { show(langReturn); if (langReturn === "s-title") menuSel("#title-menu", 1); }
   }));
 
@@ -165,7 +191,7 @@
   }
   cloneLogo("#s-bighorses .bh", $(".cr-bh"), "-cr");
   cloneLogo("#s-bignotti .bn", $(".cr-bn"), "-cr");
-  $("#cr-back").addEventListener("click", () => { SFX.tick(); show("s-title"); menuSel("#title-menu", 2); });
+  $("#cr-back").addEventListener("click", () => { SFX.back(); show("s-title"); menuSel("#title-menu", 2); });
 
   // ---------- creazione personaggio ----------
   const AVG = 11;
@@ -200,7 +226,7 @@
     i = (i + CLASSES.length) % CLASSES.length;
     if (i === cls) return;
     cls = i;
-    SFX.tick();
+    SFX.move();
     const img = $("#cc-portrait");
     img.classList.add("swap");
     setTimeout(() => { img.src = CLASSES[cls].img; img.classList.remove("swap"); }, 220);
@@ -212,7 +238,7 @@
   $("#cc-name").addEventListener("input", e => { e.target.value = "Pogga"; });
 
   const modal = $("#confirm");
-  function askConfirm() { SFX.tick(); modal.classList.add("show"); if (lang === "calle") playVm(modal.querySelector("p .vm")); }
+  function askConfirm() { SFX.confirm(); modal.classList.add("show"); if (lang === "calle") playVm(modal.querySelector("p .vm")); }
   function closeConfirm() { modal.classList.remove("show"); }
   function confirmYes() {
     closeConfirm();
@@ -227,10 +253,10 @@
     after(5200, () => { show("s-end"); SFX.boom(); if (lang === "calle") setTimeout(() => playVm($("#s-end .big-banner .vm")), 600); });
   }
   $("#cc-ok").addEventListener("click", askConfirm);
-  $("#cc-back").addEventListener("click", () => { SFX.tick(); show("s-title"); menuSel("#title-menu", 0); });
-  $("#c-no").addEventListener("click", () => { SFX.tick(); closeConfirm(); });
+  $("#cc-back").addEventListener("click", () => { SFX.back(); show("s-title"); menuSel("#title-menu", 0); });
+  $("#c-no").addEventListener("click", () => { SFX.back(); closeConfirm(); });
   $("#c-yes").addEventListener("click", confirmYes);
-  $("#again").addEventListener("click", () => { SFX.tick(); show("s-title"); menuSel("#title-menu", 0); });
+  $("#again").addEventListener("click", () => { SFX.confirm(); show("s-title"); menuSel("#title-menu", 0); });
 
   // click per saltare l'intro
   ["s-warn", "s-bighorses", "s-bignotti"].forEach(id => $("#" + id).addEventListener("click", e => { if (!e.target.closest(".vm")) skipIntro(); }));
@@ -243,14 +269,14 @@
     if (["s-warn", "s-bighorses", "s-bignotti"].includes(screen)) return skipIntro();
     if (screen === "s-title" || screen === "s-lang") {
       const m = screen === "s-title" ? "#title-menu" : "#lang-menu";
-      if (k === "ArrowDown") { SFX.tick(); menuSel(m, sel[m] + 1); }
-      else if (k === "ArrowUp") { SFX.tick(); menuSel(m, sel[m] - 1); }
+      if (k === "ArrowDown") { SFX.move(); menuSel(m, sel[m] + 1); }
+      else if (k === "ArrowUp") { SFX.move(); menuSel(m, sel[m] - 1); }
       else if (k === "Enter" || k === " ") $$(m + " button")[sel[m] || 0].click();
-      else if (k === "Escape" && screen === "s-lang") { show(langReturn); }
+      else if (k === "Escape" && screen === "s-lang") { SFX.back(); show(langReturn); }
       e.preventDefault();
     } else if (screen === "s-cc") {
       if (modal.classList.contains("show")) {
-        if (k === "Enter") confirmYes(); else if (k === "Escape") closeConfirm();
+        if (k === "Enter") confirmYes(); else if (k === "Escape") { SFX.back(); closeConfirm(); }
         return;
       }
       if (k === "ArrowDown") pick(cls + 1);

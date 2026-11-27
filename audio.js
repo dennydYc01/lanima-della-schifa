@@ -7,7 +7,9 @@ window.SFX = (() => {
     ctx = new (window.AudioContext || window.webkitAudioContext)();
     master = ctx.createGain();
     master.gain.value = 0.8;
-    master.connect(ctx.destination);
+    const lim = ctx.createDynamicsCompressor();
+    lim.threshold.value = -12; lim.knee.value = 6; lim.ratio.value = 12; lim.attack.value = 0.003; lim.release.value = 0.2;
+    master.connect(lim).connect(ctx.destination);
     // riverbero da cattedrale con impulso generato
     verb = ctx.createConvolver();
     const len = ctx.sampleRate * 4.5;
@@ -45,10 +47,31 @@ window.SFX = (() => {
 
   // Drone cupo + coro lontano
   let amb;
+  const MUSIC = ["assets/music.mp3", "assets/music.m4a", "assets/music.ogg"];
+  async function loadMusic() {
+    for (const url of MUSIC) {
+      try {
+        const r = await fetch(url); if (!r.ok) continue;
+        return await ctx.decodeAudioData(await r.arrayBuffer());
+      } catch (e) {}
+    }
+    return null;
+  }
   function ambient() {
     if (amb) return;
-    const g = ctx.createGain(); g.gain.value = 0;
-    g.gain.linearRampToValueAtTime(0.22, now() + 6);
+    amb = ctx.createGain(); amb.gain.value = 0;
+    amb.gain.linearRampToValueAtTime(0.22, now() + 6);
+    out(amb, 0.15);
+    loadMusic().then(buf => {
+      if (buf) {
+        const src = ctx.createBufferSource(); src.buffer = buf; src.loop = true;
+        const g = ctx.createGain(); g.gain.value = 3;   // 0.22 * 3 ≈ 0.66 a regime
+        src.connect(g).connect(amb); src.start();
+      } else synthAmbient(amb);
+    });
+  }
+  function synthAmbient(dest) {
+    const g = dest;
     const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 320; lp.Q.value = 4;
     const lfo = ctx.createOscillator(); lfo.frequency.value = 0.05;
     const lfoG = ctx.createGain(); lfoG.gain.value = 160;
@@ -71,8 +94,6 @@ window.SFX = (() => {
       o.connect(tg).connect(choir); o.start();
     });
     lp.connect(g); choir.connect(g);
-    out(g, 0.6);
-    amb = g;
   }
   function duck(level, sec = 1.5) {
     if (!amb) return;
@@ -81,23 +102,41 @@ window.SFX = (() => {
     amb.gain.linearRampToValueAtTime(level, now() + sec);
   }
 
-  function tick() {
-    if (!ctx) return;
-    const o = ctx.createOscillator(); o.type = "triangle"; o.frequency.value = 1400;
-    o.frequency.exponentialRampToValueAtTime(700, now() + 0.08);
-    const g = ctx.createGain(); env(g, now(), 0.003, 0.12, 0.12);
-    o.connect(g); out(g, 0.4); o.start(); o.stop(now() + 0.2);
+  // tocco di legno: rumore filtrato cortissimo + colpo sordo
+  function knock(freq, peak, wet) {
+    const t = now();
+    const n = noise(0.08); const bp = ctx.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = freq * 4; bp.Q.value = 3;
+    const ng = ctx.createGain(); env(ng, t, 0.001, peak, 0.05);
+    n.connect(bp).connect(ng); out(ng, wet); n.start(t);
+    const o = ctx.createOscillator(); o.type = "sine"; o.frequency.setValueAtTime(freq, t); o.frequency.exponentialRampToValueAtTime(freq * 0.7, t + 0.08);
+    const og = ctx.createGain(); env(og, t, 0.002, peak * 0.9, 0.09);
+    o.connect(og); out(og, wet); o.start(t); o.stop(t + 0.15);
   }
+  function move() { if (ctx) knock(520, 0.16, 0.25); }
+  function back() { if (ctx) knock(260, 0.22, 0.35); }
+  // rintocco metallico basso, parziali non armoniche come una piccola campana di ferro
+  function confirm() {
+    if (!ctx) return;
+    const t = now();
+    knock(300, 0.18, 0.3);
+    [[196, 0.11], [196 * 2.76, 0.05], [196 * 5.4, 0.025], [196 * 8.9, 0.012]].forEach(([f, a]) => {
+      const o = ctx.createOscillator(); o.frequency.value = f;
+      const g = ctx.createGain(); env(g, t + 0.005, 0.004, a, 1.6);
+      o.connect(g); out(g, 0.6); o.start(t); o.stop(t + 1.8);
+    });
+  }
+  function deny() { if (ctx) { knock(140, 0.3, 0.4); setTimeout(() => knock(120, 0.25, 0.4), 110); } }
+  const tick = move;
 
   function boom() {
     if (!ctx) return;
     const t = now();
     const o = ctx.createOscillator(); o.type = "sine"; o.frequency.setValueAtTime(90, t);
     o.frequency.exponentialRampToValueAtTime(30, t + 1.5);
-    const g = ctx.createGain(); env(g, t, 0.01, 0.9, 2.5);
+    const g = ctx.createGain(); env(g, t, 0.01, 0.45, 2.5);
     o.connect(g); out(g, 0.7); o.start(); o.stop(t + 3);
     const n = noise(2); const f = ctx.createBiquadFilter(); f.type = "lowpass"; f.frequency.value = 400;
-    const ng = ctx.createGain(); env(ng, t, 0.005, 0.5, 1.2);
+    const ng = ctx.createGain(); env(ng, t, 0.005, 0.2, 1.2);
     n.connect(f).connect(ng); out(ng, 0.8); n.start();
     // campana
     [523, 1046, 1569, 2093].forEach((fr, i) => {
@@ -140,30 +179,36 @@ window.SFX = (() => {
     w.connect(wf).connect(wg); out(wg, 0.5); w.start(tw); w.stop(tw + 1);
   }
 
-  // Ronzio neon + fizz per BigNotti
-  function notti() {
+  // Ronzio neon per BigNotti. events = [[secondi, luminosità 0..1], ...]: la stessa tabella
+  // che game.js usa per accendere il logo, così suono e luce vanno insieme.
+  function notti(events, total) {
     if (!ctx) return;
     const t = now();
     const hum = ctx.createOscillator(); hum.type = "sawtooth"; hum.frequency.value = 100;
-    const hf = ctx.createBiquadFilter(); hf.type = "lowpass"; hf.frequency.value = 900;
+    const hum2 = ctx.createOscillator(); hum2.type = "square"; hum2.frequency.value = 50;
+    const hf = ctx.createBiquadFilter(); hf.type = "lowpass"; hf.frequency.value = 700;
+    const h2g = ctx.createGain(); h2g.gain.value = 0.3;
     const hg = ctx.createGain(); hg.gain.setValueAtTime(0, t);
-    // sfarfallio come l'animazione
-    [[0, 0], [0.05, 0.06], [0.25, 0], [0.4, 0.06], [0.9, 0.015], [1, 0.05], [3.4, 0.05], [3.8, 0]].forEach(([d, v]) => hg.gain.setValueAtTime(v, t + d));
-    hum.connect(hf).connect(hg); out(hg, 0.2); hum.start(t); hum.stop(t + 4);
-    // ghiaccio
-    [0.5, 0.62, 0.7].forEach((d, i) => {
-      const o = ctx.createOscillator(); o.frequency.value = 2600 + i * 700;
-      const g = ctx.createGain(); env(g, t + d, 0.002, 0.1, 0.25);
-      o.connect(g); out(g, 0.6); o.start(t + d); o.stop(t + d + 0.3);
+    hum.connect(hf); hum2.connect(h2g).connect(hf); hf.connect(hg); out(hg, 0.15);
+    let prev = 0;
+    events.forEach(([d, v]) => {
+      hg.gain.setValueAtTime(0.035 * v, t + d);
+      if (v > prev + 0.3) {                         // scintilla a ogni accensione
+        const z = noise(0.05); const zf = ctx.createBiquadFilter(); zf.type = "highpass"; zf.frequency.value = 2500;
+        const zg = ctx.createGain(); env(zg, t + d, 0.001, 0.08, 0.03);
+        z.connect(zf).connect(zg); out(zg, 0.2); z.start(t + d);
+      }
+      prev = v;
     });
-    // fizz: tanti clic acuti
-    const n = noise(3.5); const hp = ctx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 5000;
-    const ng = ctx.createGain(); ng.gain.setValueAtTime(0, t);
-    for (let i = 0; i < 160; i++) {
-      const tt = t + 0.8 + Math.random() * 2.6;
-      ng.gain.setValueAtTime(Math.random() * 0.25, tt); ng.gain.setValueAtTime(0, tt + 0.004);
-    }
-    n.connect(hp).connect(ng); out(ng, 0.2); n.start(t);
+    hg.gain.setValueAtTime(hg.gain.value, t + total - 0.6);
+    hg.gain.linearRampToValueAtTime(0, t + total);  // sfuma, niente colpo finale
+    hum.start(t); hum2.start(t); hum.stop(t + total + 0.1); hum2.stop(t + total + 0.1);
+    // ghiaccio nel bicchiere, piano
+    [0.95, 1.05, 1.12].forEach((d, i) => {
+      const o = ctx.createOscillator(); o.frequency.value = 2400 + i * 600;
+      const g = ctx.createGain(); env(g, t + d, 0.002, 0.04, 0.2);
+      o.connect(g); out(g, 0.5); o.start(t + d); o.stop(t + d + 0.3);
+    });
   }
 
   // Borbottio da vocale WhatsApp: restituisce una funzione per fermarlo
@@ -237,5 +282,5 @@ window.SFX = (() => {
     };
   }
 
-  return { init, ambient, duck, tick, boom, horses, notti, voice, get ready() { return !!ctx; } };
+  return { init, ambient, duck, tick, move, back, confirm, deny, boom, horses, notti, voice, get ready() { return !!ctx; } };
 })();

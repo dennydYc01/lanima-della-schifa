@@ -1,8 +1,8 @@
 // Testi del gioco. "calle" usa i testi italiani solo per calcolare la durata dei vocali.
 window.I18N = {
   it: {
-    gate: "Clicca o premi un tasto per iniziare",
-    gate_sub: "(si consiglia l'audio acceso)",
+    gate: "Premi un tasto per iniziare",
+    gate_sub: "Questo gioco va giocato con l'audio acceso",
     warn_title: "Avvertenza",
     warn_body: "Questo gioco contiene immagini forti, non adatte a un pubblico qualsiasi.",
     press: "Premi un tasto",
@@ -78,8 +78,8 @@ window.I18N = {
   },
 
   sc: {
-    gate: "Craca o carca unu tastu pro incumintzare",
-    gate_sub: "(est mègius cun su sonu allutu)",
+    gate: "Carca unu tastu pro incumintzare",
+    gate_sub: "Custu giogu si giogat cun su sonu allutu",
     warn_title: "Atentzione",
     warn_body: "Custu giogu cuntenet immàgines fortes, no adatas a unu pùblicu cale si siat.",
     press: "Carca unu tastu",

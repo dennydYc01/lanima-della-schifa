@@ -16,9 +16,15 @@
 <!-- 0. Gate (serve per sbloccare l'audio) -->
 <section class="screen active" id="s-gate">
   <div class="gate-inner">
-    <div class="sigil"></div>
-    <p class="pulse" data-i18n="gate"></p>
+    <svg class="speaker" viewBox="0 0 64 64" aria-hidden="true">
+      <path d="M10 24 h10 l14 -12 v40 l-14 -12 h-10 z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+      <path class="w1" d="M42 24 q5 8 0 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+      <path class="w2" d="M48 18 q10 14 0 28" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+      <path class="w3" d="M54 12 q15 20 0 40" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+    <div class="audio-on">Audio <b>ON</b></div>
     <p class="small" data-i18n="gate_sub"></p>
+    <p class="pulse" data-i18n="gate"></p>
   </div>
 </section>
 
