@@ -181,13 +181,22 @@
       <div class="cc-classname" id="cc-classname"></div>
     </main>
     <aside class="cc-right panel">
-      <div class="row lvl"><span data-i18n="cc_level"></span><b id="cc-lvl"></b></div>
-      <div class="lbl" data-i18n="cc_stats"></div>
-      <ul id="stat-list"></ul>
-      <div class="lbl" data-i18n="cc_equip"></div>
-      <ul id="equip-list"></ul>
-      <div class="lbl" data-i18n="cc_summon"></div>
-      <p id="cc-summon" data-i18n="cc_summon_who"></p>
+      <!-- su mobile i due gruppi diventano accordion; su desktop sono sempre aperti -->
+      <div class="acc" id="acc-stats">
+        <button class="acc-h row lvl" type="button" aria-expanded="false"><span data-i18n="cc_level"></span><b id="cc-lvl"></b></button>
+        <div class="acc-b">
+          <div class="lbl" data-i18n="cc_stats"></div>
+          <ul id="stat-list"></ul>
+        </div>
+      </div>
+      <div class="acc" id="acc-equip">
+        <button class="acc-h lbl" type="button" aria-expanded="false"><span data-i18n="cc_equip"></span></button>
+        <div class="acc-b">
+          <ul id="equip-list"></ul>
+          <div class="lbl" data-i18n="cc_summon"></div>
+          <p id="cc-summon" data-i18n="cc_summon_who"></p>
+        </div>
+      </div>
     </aside>
   </div>
   <footer class="cc-foot">

@@ -252,6 +252,15 @@
     if (li && matchMedia("(max-width: 900px)").matches) li.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" });
   }
 
+  // accordion (contano solo su mobile, il CSS desktop li lascia sempre aperti)
+  $$(".acc-h").forEach(h => h.addEventListener("click", () => {
+    if (!matchMedia("(max-width: 900px)").matches) return;
+    const acc = h.closest(".acc");
+    const open = acc.classList.toggle("open");
+    h.setAttribute("aria-expanded", open);
+    SFX.move();
+  }));
+
   const modal = $("#confirm");
   function askConfirm() { SFX.confirm(); modal.classList.add("show"); if (lang === "calle") playVm(modal.querySelector("p .vm")); }
   function closeConfirm() { modal.classList.remove("show"); }
@@ -332,5 +341,6 @@
   // ?skip=cc|title|bighorses|... e ?lang=calle per saltare direttamente a una schermata (sviluppo)
   const qs = new URLSearchParams(location.search);
   if (qs.get("lang")) setLang(qs.get("lang"));
+  if (qs.get("open")) $$(".acc").forEach(a => a.classList.add("open"));
   if (qs.get("skip")) { document.body.classList.add("notrans"); const id = "s-" + qs.get("skip"); show(id); if (id === "s-title") menuSel("#title-menu", 0); }
 })();

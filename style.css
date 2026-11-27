@@ -312,3 +312,45 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .begin-banner::before { background: linear-gradient(180deg, transparent, rgba(0,0,0,.55) 25%, rgba(0,0,0,.55) 75%, transparent); }
 #s-begin.active .begin-banner { animation: banner 3s ease both; }
 #s-end.active .death { animation-delay: .35s; }
+
+/* accordion: su desktop sembrano le intestazioni di prima */
+.acc-h { display: flex; width: 100%; text-align: left; cursor: default; padding: 0; }
+.acc-h.lbl { padding-bottom: 6px; }
+
+/* ===== Mobile v2: lingua in alto a destra, classi in alto, carosello, accordion ===== */
+@media (max-width: 900px) {
+  .cc-head { flex-wrap: nowrap; align-items: center; gap: 10px; }
+  .cc-head h2 { flex: 1; min-width: 0; font-size: 12px; letter-spacing: .14em; line-height: 1.4; }
+  .cc-lang { flex: none; }
+  .cc-lang button { padding: 6px 8px; font-size: 10.5px; letter-spacing: .1em; }
+
+  /* il pannello sinistro si "scioglie": classi in cima, nome in fondo */
+  .cc-left { display: contents; }
+  .cc-left .lbl { display: none; }
+  #class-list { order: 1; margin: 0 -16px; padding: 2px 16px 4px; }
+  .cc-center { order: 2; }
+  .cc-right { order: 3; }
+  #cc-name { order: 4; width: 100%; margin: 0; }
+  .cc-left .lbl + #cc-name { margin-top: 0; }
+
+  .altar { height: min(44vh, 400px); }
+  .cc-classname { font-size: 18px; margin-top: 0; }
+
+  .cc-right { padding: 0; }
+  .cc-right::before, .cc-right::after { display: none; }
+  .acc + .acc { border-top: 1px solid var(--line); }
+  .acc-h { cursor: pointer; align-items: center; justify-content: space-between; gap: 12px; margin: 0; padding: 14px 16px; border: 0; }
+  .acc-h.lbl { font-size: 13px; padding: 16px; }
+  .acc-h.row.lvl { font-size: 16px; }
+  .acc-h.row.lvl b { font-size: 24px; margin-left: auto; }
+  .acc-h::after { content: "▾"; color: var(--gold); font-size: 14px; transition: transform .2s; flex: none; }
+  .acc.open .acc-h::after { transform: rotate(180deg); }
+  .acc-b { display: none; padding: 0 16px 16px; }
+  .acc.open .acc-b { display: block; }
+  .acc-b > ul:last-child, #acc-equip #cc-summon { margin-bottom: 0; }
+}
+@media (max-width: 900px) {
+  #s-cc { display: flex; flex-direction: column; }
+  #s-cc .cc { flex: 1 0 auto; }
+  .cc-foot { margin-top: auto; }
+}
