@@ -51,7 +51,7 @@ window.I18N = {
     again: "Ricomincia",
     // classi
     boss_n: "Il Deme",
-    boss_e: ["Gotta", "Luigi Delneri", "Bimby", "Risiko"],
+    boss_e: ["Gotta", "Luigi Delneri", "Crostata del Basko", "Risiko"],
     sed_n: "La Transizione",
     sed_e: ["Brufoli", "Felipe Melo", "Fialetta Annerente", "Indovina Chi?"],
     spi_n: "Il Tonno Fresco",
@@ -120,7 +120,7 @@ window.I18N = {
     end_sub: "Su chi abarrat de su giogu est galu in su tzilleri.",
     again: "Torra a incumintzare",
     boss_n: "Su Deme",
-    boss_e: ["Gota", "Luigi Delneri", "Bimby", "Risiko"],
+    boss_e: ["Gota", "Luigi Delneri", "Crostada de su Basko", "Risiko"],
     sed_n: "Sa Transitzione",
     sed_e: ["Brùfulos", "Felipe Melo", "Fialeta Innieddadora", "Indovina Chie?"],
     spi_n: "Su Tunnu Friscu",
