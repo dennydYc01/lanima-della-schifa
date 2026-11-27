@@ -67,7 +67,7 @@ window.I18N = {
     pos_n: "L'Abusatore",
     pos_e: ["Gastrite", "Ciro Ferrara", "Friggitrice ad Aria", "Monopoli"],
     tuf_n: "L'Acquasantiero",
-    tuf_e: ["Otite", "Simone Pepe", "Ferro da Stiro a Vapore", "Cluedo"],
+    tuf_e: ["Otite", "Simone Pepe", "Sirillì", "Cluedo"],
   },
 
   sc: {
@@ -136,7 +136,7 @@ window.I18N = {
     pos_n: "S'Abusadore",
     pos_e: ["Gastrite", "Ciro Ferrara", "Frigidora a Àera", "Monopoli"],
     tuf_n: "S'Abbasanteri",
-    tuf_e: ["Otite", "Simone Pepe", "Ferru de Istirare a Bàpore", "Cluedo"],
+    tuf_e: ["Otite", "Simone Pepe", "Sirillì", "Cluedo"],
   },
 };
 
