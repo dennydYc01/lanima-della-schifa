@@ -242,21 +242,16 @@
   function closeConfirm() { modal.classList.remove("show"); }
   function confirmYes() {
     closeConfirm();
-    const name = "Pogga";
-    const T = lang === "sc" ? D.sc : D.it;
-    const bn = $("#begin-name");
-    if (lang === "calle") bn.innerHTML = vm(name + " " + D.it[CLASSES[cls].key + "_n"]);
-    else bn.textContent = `${name} — ${T[CLASSES[cls].key + "_n"]}`;
-    show("s-begin");
+    show("s-end");
     SFX.boom();
-    if (lang === "calle") setTimeout(() => playVm($("#s-begin .big-banner .vm")), 600);
-    after(5200, () => { show("s-end"); SFX.boom(); if (lang === "calle") setTimeout(() => playVm($("#s-end .big-banner .vm")), 600); });
+    if (lang === "calle") setTimeout(() => playVm($("#s-end .big-banner .vm")), 600);
+    after(6000, toMenu);
   }
+  function toMenu() { clearTimeout(seqTimer); show("s-title"); menuSel("#title-menu", 0); }
   $("#cc-ok").addEventListener("click", askConfirm);
   $("#cc-back").addEventListener("click", () => { SFX.back(); show("s-title"); menuSel("#title-menu", 0); });
-  $("#c-no").addEventListener("click", () => { SFX.back(); closeConfirm(); });
-  $("#c-yes").addEventListener("click", confirmYes);
-  $("#again").addEventListener("click", () => { SFX.confirm(); show("s-title"); menuSel("#title-menu", 0); });
+  // due "Sì": non si torna indietro
+  $$("#confirm .modal-btns .btn").forEach(b => b.addEventListener("click", confirmYes));
 
   // click per saltare l'intro
   ["s-warn", "s-bighorses", "s-bignotti"].forEach(id => $("#" + id).addEventListener("click", e => { if (!e.target.closest(".vm")) skipIntro(); }));
@@ -276,7 +271,7 @@
       e.preventDefault();
     } else if (screen === "s-cc") {
       if (modal.classList.contains("show")) {
-        if (k === "Enter") confirmYes(); else if (k === "Escape") { SFX.back(); closeConfirm(); }
+        if (k === "Enter" || k === "Escape") confirmYes();
         return;
       }
       if (k === "ArrowDown") pick(cls + 1);
@@ -284,7 +279,7 @@
       else if (k === "Enter") askConfirm();
       else if (k === "Escape") $("#cc-back").click();
     } else if (screen === "s-credits" && (k === "Escape" || k === "Enter")) $("#cr-back").click();
-    else if (screen === "s-end" && k === "Enter") $("#again").click();
+    else if (screen === "s-end" && performance.now() - screenAt > 2500) toMenu();
   });
 
   // ---------- braci ----------

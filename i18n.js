@@ -44,7 +44,7 @@ window.I18N = {
     yes: "Sì",
     no: "No",
     begin: "Il tuo viaggio ha inizio",
-    end: "Fine della demo",
+    end: "Sei morto",
     end_sub: "Il resto del gioco è ancora al bar.",
     again: "Ricomincia",
     // classi
@@ -121,7 +121,7 @@ window.I18N = {
     yes: "Eja",
     no: "Nono",
     begin: "Su biàgiu tuo incumintzat",
-    end: "Acabbu de sa demo",
+    end: "Ses mortu",
     end_sub: "Su chi abarrat de su giogu est galu in su tzilleri.",
     again: "Torra a incumintzare",
     boss_n: "Su Deme",
