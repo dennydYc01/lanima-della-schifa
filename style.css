@@ -268,3 +268,5 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 #s-end.active .death { animation: death 4.5s ease both; }
 @keyframes death { 0% { opacity: 0; transform: scale(1.06); letter-spacing: .02em; }
   25% { opacity: 1; } 100% { opacity: 1; transform: scale(1); letter-spacing: .12em; } }
+
+#cc-summon { margin: 0; font-size: 20px; color: var(--gold-hi); font-family: var(--display); letter-spacing: .12em; }
