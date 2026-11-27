@@ -211,13 +211,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .calle #class-list li.sel .vm { outline: 2px solid var(--gold); outline-offset: 2px; }
 .calle #stat-list li, .calle #equip-list li { padding-top: 4px; padding-bottom: 4px; }
 
-@media (max-width: 980px) {
-  body { overflow: auto; }
-  #s-cc { position: absolute; min-height: 100%; overflow-y: auto; }
-  .cc { grid-template-columns: 1fr; }
-  .altar { height: 50vh; flex: none; }
-  .hint { display: none; }
-}
 
 .notrans .screen { transition: none !important; }
 .notrans *, .notrans *::before { animation-duration: 0s !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; }
@@ -270,3 +263,44 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   25% { opacity: 1; } 100% { opacity: 1; transform: scale(1); letter-spacing: .12em; } }
 
 #cc-summon { margin: 0; font-size: 20px; color: var(--gold-hi); font-family: var(--display); letter-spacing: .12em; }
+
+/* ===== Mobile: scelta del personaggio ===== */
+.cc-arrow { display: none; }
+@media (max-width: 900px) {
+  #s-cc { display: block; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch;
+    padding: calc(14px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 0 max(16px, env(safe-area-inset-left, 0px)); }
+  .cc-head { margin-bottom: 8px; }
+  .cc-head h2 { font-size: 15px; letter-spacing: .18em; }
+  .cc-lang button { padding: 6px 9px; font-size: 11px; }
+  .cc { display: flex; flex-direction: column; gap: 14px; }
+  .cc > * { min-width: 0; }
+  .cc-center { order: 1; }
+  .cc-left { order: 2; overflow: visible; padding: 14px 0 16px; }
+  .cc-right { order: 3; overflow: visible; }
+  .altar { height: min(48vh, 420px); flex: none; }
+  #cc-portrait { margin-bottom: 10px; }
+  .cc-classname { margin-top: 4px; font-size: 20px; }
+  .cc-arrow { display: flex; align-items: center; justify-content: center; position: absolute; top: 50%; z-index: 3;
+    width: 44px; height: 44px; margin-top: -22px; font-size: 30px; line-height: 1; color: var(--gold-hi);
+    border: 1px solid var(--line); background: rgba(0,0,0,.55); border-radius: 50%; }
+  .cc-arrow.prev { left: 0; } .cc-arrow.next { right: 0; }
+  /* classi in una riga che scorre */
+  .cc-left .lbl { margin-left: 16px; margin-right: 16px; }
+  #class-list { display: flex; gap: 8px; overflow-x: auto; padding: 2px 16px 10px; margin: 0 0 14px; scroll-snap-type: x proximity;
+    scrollbar-width: none; }
+  #class-list::-webkit-scrollbar { display: none; }
+  #class-list li { flex: none; white-space: nowrap; scroll-snap-align: center; font-size: 16px; padding: 7px 14px;
+    border: 1px solid var(--line); border-left-width: 1px; }
+  #class-list li.sel { border-color: var(--gold); background: rgba(201,164,92,.16); }
+  .calle #class-list li { padding: 3px 4px; }
+  #cc-name { width: calc(100% - 32px); margin: 0 16px; font-size: 18px; }
+  .cc-right { padding: 18px 18px 20px; }
+  .row.lvl { margin-bottom: 10px; }
+  #stat-list li, #equip-list li { font-size: 17px; }
+  /* pulsanti sempre a portata di pollice */
+  .cc-foot { position: sticky; bottom: 0; z-index: 5; margin: 16px calc(-1 * max(16px, env(safe-area-inset-left, 0px))) 0;
+    padding: 12px max(16px, env(safe-area-inset-right, 0px)) calc(12px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+    background: linear-gradient(to top, rgba(7,7,10,.97) 70%, rgba(7,7,10,0)); }
+  .cc-foot .btn { flex: 1; padding: 13px 10px; }
+  .hint { display: none; }
+}

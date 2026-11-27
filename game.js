@@ -166,7 +166,7 @@
 
   function titleAct(act) {
     if (act === "quit") SFX.deny(); else SFX.confirm();
-    if (act === "new") { show("s-cc"); renderCC(); }
+    if (act === "new") { show("s-cc"); renderCC(); setTimeout(revealSelected, 60); }
     if (act === "lang") { langReturn = "s-title"; show("s-lang"); menuSel("#lang-menu", ["it", "sc", "calle"].indexOf(lang)); }
     if (act === "credits") { show("s-credits"); }
     if (act === "quit") {
@@ -230,11 +230,27 @@
     img.classList.add("swap");
     setTimeout(() => { img.src = CLASSES[cls].img; img.classList.remove("swap"); }, 220);
     renderCC();
+    revealSelected();
     if (lang === "calle") playVm($("#cc-classname .vm"));
   }
   CLASSES.forEach(c => { new Image().src = c.img; });
   // qualsiasi nome tu scriva, il gioco sa meglio di te
   $("#cc-name").addEventListener("input", e => { e.target.value = "Pogga"; });
+
+  // mobile: frecce e swipe sul personaggio, la classe scelta resta visibile nella riga
+  $("#cc-prev").addEventListener("click", () => pick(cls - 1));
+  $("#cc-next").addEventListener("click", () => pick(cls + 1));
+  let touchX = null;
+  $(".altar").addEventListener("touchstart", e => { touchX = e.touches[0].clientX; }, { passive: true });
+  $(".altar").addEventListener("touchend", e => {
+    if (touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX; touchX = null;
+    if (Math.abs(dx) > 40) pick(cls + (dx < 0 ? 1 : -1));
+  });
+  function revealSelected() {
+    const li = $("#class-list li.sel");
+    if (li && matchMedia("(max-width: 900px)").matches) li.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" });
+  }
 
   const modal = $("#confirm");
   function askConfirm() { SFX.confirm(); modal.classList.add("show"); if (lang === "calle") playVm(modal.querySelector("p .vm")); }
