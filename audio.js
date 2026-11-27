@@ -22,7 +22,7 @@ window.SFX = (() => {
     const vg = ctx.createGain();
     vg.gain.value = 0.5;
     verb.connect(vg).connect(master);
-    fetch("assets/calle.m4a").then(r => r.arrayBuffer()).then(b => ctx.decodeAudioData(b))
+    fetch("assets/calle.mp4").then(r => r.arrayBuffer()).then(b => ctx.decodeAudioData(b))
       .then(b => { calleBuf = b; }).catch(() => { /* da file:// non si carica: si usa il borbottio sintetico */ });
   }
 

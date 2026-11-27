@@ -21,4 +21,4 @@ Foto e voce sono di persone vere, quindi restano fuori dalla repo. Per far girar
 
 - `boss.png`, `seduttore.png`, `spiaggiato.png`, `sciamano.png`, `bandolero.png`,
   `fangoso.png`, `saltatore.png`, `posseduto.png`, `tuffatore.png`: sticker scontornati (PNG trasparenti)
-- `calle.m4a`: serbatoio di sillabe rimescolate per la modalità Calle (se manca, si usa un borbottio sintetico)
+- `calle.mp4`: serbatoio di sillabe rimescolate per la modalità Calle (se manca, si usa un borbottio sintetico)
